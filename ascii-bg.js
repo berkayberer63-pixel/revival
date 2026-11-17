@@ -2700,8 +2700,10 @@
   window.addEventListener("rvl:anim-change", syncLoop);
   document.addEventListener("visibilitychange", syncLoop);
 
-  resize();
-  if (!isPaused()) {
-    rafId = requestAnimationFrame(frame);
-  }
+  requestAnimationFrame(() => {
+    resize();
+    if (!isPaused()) {
+      rafId = requestAnimationFrame(frame);
+    }
+  });
 })();

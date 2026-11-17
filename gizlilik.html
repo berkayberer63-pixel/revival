@@ -23,9 +23,10 @@
   <link rel="apple-touch-icon" href="assets/logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="theme-light.css" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" /></noscript>
+  <link rel="stylesheet" href="styles.min.css" />
+  <link rel="stylesheet" href="theme-light.min.css" />
 </head>
 <body data-page="privacy">
   <script>try{if(localStorage.getItem("rvl_color_mode")==="dark")document.body.classList.add("theme-dark");if(localStorage.getItem("rvl_no_anim")==="1")document.body.classList.add("no-anim");}catch(_){}</script>
@@ -44,7 +45,7 @@
           <option value="black-hole">🕳️ Kara Delik</option>
         </select>
         <a href="/" class="brand" data-nav="home">
-          <img class="brand-logo-img" src="assets/logo.jpg" alt="RVL" />
+          <img class="brand-logo-img" src="assets/logo-sm.jpg" alt="RVL" width="24" height="24" decoding="async" />
           <span class="brand-rvl">Revival</span> <span class="brand-tracker">Kartları</span>
         </a>
         <nav class="nav-links" id="mainNav">
@@ -113,7 +114,7 @@
     </article>
   </main>
 
-  <script src="ascii-bg.js"></script>
+  <script defer src="ascii-bg.js"></script>
   <script>
     (function () {
       const saved = localStorage.getItem("rvl_color_mode") || "light";

@@ -915,7 +915,7 @@
       const gradeLabel = GRADE_LABELS[p.grade] || p.grade;
       const embIcon = (window.EMBLEM_ICONS || {})[p.team];
       const teamIconHtml = embIcon
-        ? `<img class="tbl-team-icon" src="assets/emblems/${embIcon}" alt="${p.team}" loading="lazy" onerror="this.style.display='none';" />`
+        ? `<img class="tbl-team-icon" src="assets/emblems/${embIcon}" alt="${p.team}" width="20" height="20" loading="lazy" decoding="async" onerror="this.style.display='none';" />`
         : "";
 
       rowsHtml.push(`
