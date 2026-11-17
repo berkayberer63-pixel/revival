@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RVLTracker — Gizlilik ve KVKK Aydınlatma Metni</title>
+  <meta name="description" content="RVLTracker gizlilik politikası ve 6698 sayılı KVKK kapsamında aydınlatma metni." />
+  <meta name="theme-color" content="#38bdf8" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
+</head>
+<body data-page="privacy">
+  <script>try{if(localStorage.getItem("rvl_color_mode")==="dark")document.body.classList.add("theme-dark");if(localStorage.getItem("rvl_no_anim")==="1")document.body.classList.add("no-anim");}catch(_){}</script>
+  <canvas id="asciiBgCanvas" aria-hidden="true"></canvas>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <select id="bgThemeSelect" class="bg-theme-select" title="Arka Plan Teması Seç">
+          <option value="cloud-sea">🌅 Bulut Denizi</option>
+          <option value="volcano-night">🌋 Yanardağ Gecesi</option>
+          <option value="lantern-lake">🏮 Fener Gölü</option>
+          <option value="aurora-fjord">🌌 Aurora Fiyort</option>
+          <option value="kyoto-dusk">⛩️ Kyoto Akşamı</option>
+          <option value="frog">🐸 Kurbağa</option>
+          <option value="black-hole">🕳️ Kara Delik</option>
+        </select>
+        <a href="index.html" class="brand" data-nav="home">
+          <img class="brand-logo-img" src="assets/favicon.png" alt="RVL" />
+          <span class="brand-rvl">RVL</span><span class="brand-tracker">Tracker</span>
+        </a>
+        <nav class="nav-links" id="mainNav">
+          <a class="nav-link" href="index.html" data-tab="home"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></span><span class="nav-txt">Ana Sayfa</span></a>
+          <a class="nav-link" href="oyuncular.html" data-tab="players"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.6c2.4.2 4.3 1.7 4.9 4.4"/></svg></span><span class="nav-txt">Oyuncular</span></a>
+          <a class="nav-link" href="amblemler.html" data-tab="emblems"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8 7.5 9.5 4.4-1.5 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nav-txt">Amblemler</span></a>
+          <a class="nav-link" href="ekipmanlar.html" data-tab="equipments"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15.5h10.5l3-2.5 4.5 1v3.5H3z"/><path d="M5 15.5V9.5h4l2 3"/><path d="M7 19.5h2M13 19.5h2"/></svg></span><span class="nav-txt">Ekipmanlar</span></a>
+          <a class="nav-link" href="kadro.html" data-tab="squad"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 12h17"/><circle cx="12" cy="12" r="2.6"/></svg></span><span class="nav-txt">Kadro</span></a>
+          <a class="nav-link" href="karsilastirma.html" data-tab="compare"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M17 4v16"/><path d="M3.5 8.5 7 5l3.5 3.5M13.5 15.5 17 19l3.5-3.5"/></svg></span><span class="nav-txt">Karşılaştırma</span></a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <span class="db-badge" id="dbBadge">15.583 Kart</span>
+      </div>
+      <div class="sidebar-legal">
+        <a href="gizlilik.html" class="sidebar-legal-link active">Gizlilik ve KVKK Aydınlatma Metni</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <article class="legal-card">
+      <header class="legal-header">
+        <h1 class="legal-title">Gizlilik Politikası ve KVKK Aydınlatma Metni</h1>
+        <span class="legal-updated">6698 Sayılı KVKK &amp; 5651 Sayılı Kanun</span>
+      </header>
+
+      <section class="legal-section">
+        <h2>1. Genel Bilgilendirme ve Veri Toplamama Politikası</h2>
+        <p>
+          RVLTracker, ticari amacı bulunmayan statik bir bilgi ve araç sitesidir. Sitemizde herhangi bir üyelik sistemi, kayıt formu, iletişim formu, yorum alanı veya kullanıcı hesabı bulunmamaktadır. Tarafımızca ziyaretçilere ait ad, soyad, e-posta adresi veya benzeri hiçbir kişisel veri doğrudan toplanmamakta, kendi veritabanımızda saklanmamakta ve üçüncü kişilerle paylaşılmamaktadır.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>2. Teknik Erişim Kayıtları (IP Adresi) ve Altyapı Güvenliği</h2>
+        <p>
+          Türkiye Cumhuriyeti 5651 sayılı Kanun ve 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında IP adresi kişisel veri sayılmaktadır. Sitemiz kendi veritabanına herhangi bir ziyaretçi verisi kaydetmese de, sitenin barındırıldığı sunucu, içerik dağıtım ağı (CDN) ve güvenlik/DDoS koruma altyapı hizmetleri (Cloudflare, barındırma/hosting sağlayıcısı vb.) kapsamında hizmetin kesintisiz ve güvenli sunulabilmesi amacıyla teknik erişim kayıtları (access logs — IP adresi, erişim zamanı ve temel tarayıcı bilgileri) geçici süreyle otomatik olarak işlenebilmektedir.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>3. Üçüncü Taraf Kaynaklar</h2>
+        <p>
+          Sitemizde yazı tiplerinin doğru görüntülenmesi amacıyla Google Fonts gibi harici kaynaklara tarayıcınız üzerinden bağlantı kurulmaktadır. Bu teknik istekler sırasında tarayıcınız ilgili hizmet sağlayıcının sunucularıyla IP adresinizi paylaşabilir; söz konusu aktarım tamamen ilgili üçüncü taraf hizmetin kendi gizlilik ve veri işleme politikaları çerçevesinde gerçekleşir.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>4. Çerezler ve Tarayıcı Yerel Depolaması (LocalStorage)</h2>
+        <p>
+          Sitemizde reklam, pazarlama veya ziyaretçi takibi amacıyla kullanılan analitik çerezler bulunmamaktadır. Seçtiğiniz arka plan teması, açık/karanlık mod tercihi, favori oyuncular, karşılaştırma listesi ve oluşturduğunuz kadro verileri yalnızca kendi cihazınızdaki tarayıcı yerel depolamasında (<code>localStorage</code>) tutulur. Bu veriler sunucularımıza gönderilmez ve tarayıcı ayarlarınızdan site verilerini temizleyerek istediğiniz zaman silebilirsiniz.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>5. Haklarınız</h2>
+        <p>
+          6698 sayılı KVKK'nın 11. maddesi uyarınca kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme ve kanunda öngörülen diğer haklara sahipsiniz. Sitemizde yalnızca yukarıda belirtilen teknik altyapı ve tarayıcı yerel depolama süreçleri söz konusu olup, tarayıcı ayarlarınız üzerinden yerel verilerinizi her zaman kontrol edebilirsiniz.
+        </p>
+      </section>
+
+      <div class="legal-footer-actions">
+        <a href="index.html" class="legal-back-btn">← Ana Sayfaya Dön</a>
+      </div>
+    </article>
+  </main>
+
+  <script src="ascii-bg.js"></script>
+  <script>
+    (function () {
+      const saved = localStorage.getItem("rvl_color_mode") || "light";
+      const applyMode = (mode) => {
+        const isDark = mode === "dark";
+        document.body.classList.toggle("theme-dark", isDark);
+        const btn = document.getElementById("colorModeToggle");
+        if (btn) {
+          btn.innerHTML = isDark ? "<span>☀️</span><span>Açık Mod</span>" : "<span>🌙</span><span>Karanlık Mod</span>";
+          btn.setAttribute("aria-pressed", String(isDark));
+        }
+      };
+      const bgSelect = document.getElementById("bgThemeSelect");
+      if (bgSelect && bgSelect.parentNode && !document.getElementById("colorModeToggle")) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = "colorModeToggle";
+        btn.className = "color-mode-btn";
+        btn.title = "Açık / Karanlık Mod Değiştir";
+        bgSelect.insertAdjacentElement("beforebegin", btn);
+        btn.addEventListener("click", () => {
+          const next = document.body.classList.contains("theme-dark") ? "light" : "dark";
+          localStorage.setItem("rvl_color_mode", next);
+          applyMode(next);
+        });
+      }
+      applyMode(saved);
+
+      const savedOff = localStorage.getItem("rvl_no_anim") === "1";
+      const applyAnim = (isOff) => {
+        document.body.classList.toggle("no-anim", isOff);
+        window.__rvlPauseBg = isOff;
+        const aBtn = document.getElementById("animToggleBtn");
+        if (aBtn) {
+          aBtn.classList.toggle("is-off", isOff);
+          aBtn.innerHTML = isOff ? "<span>✨</span><span>Animasyonları Aç</span>" : "<span>⚡</span><span>Animasyonları Kapat</span>";
+          aBtn.setAttribute("aria-pressed", String(isOff));
+        }
+        window.dispatchEvent(new CustomEvent("rvl:anim-change", { detail: { paused: isOff } }));
+      };
+      if (bgSelect && bgSelect.parentNode && !document.getElementById("animToggleBtn")) {
+        const aBtn = document.createElement("button");
+        aBtn.type = "button";
+        aBtn.id = "animToggleBtn";
+        aBtn.className = "color-mode-btn anim-toggle-btn";
+        bgSelect.insertAdjacentElement("beforebegin", aBtn);
+        aBtn.addEventListener("click", () => {
+          const nextOff = !document.body.classList.contains("no-anim");
+          localStorage.setItem("rvl_no_anim", nextOff ? "1" : "0");
+          applyAnim(nextOff);
+        });
+      }
+      applyAnim(savedOff);
+    })();
+  </script>
+</body>
+</html>
