@@ -299,12 +299,32 @@
   const GOLEY_TEAM_CODES_LC = Object.fromEntries(
     Object.entries(GOLEY_TEAM_CODES).map(([k, v]) => [k.toLocaleLowerCase("tr"), v])
   );
+  const TEAM_CODE_NAMES = {
+    AWA: "Anatolian Warriors", DEG: "Dark Eagles", FYB: "Flying Birds",
+    KOJ: "King of Jungle", NHA: "Northern Hawks", NLS: "Northlanders",
+    STI: "Snow Tigers", SFA: "Southern Falcons", WCR: "Wild Crocs",
+    WOA: "Wind of Anatolia",
+    AML: "Ace Milano", AFZ: "ACF Firenze", ATM: "AT Matador",
+    BKN: "Bat Knight", CTK: "Cataluna King", FNP: "FC Napoli",
+    FSP: "FC Sapphire", KSD: "King Sociedad", LOL: "Lyon Lily",
+    MAR: "Marseille Rose", PIR: "Paris Iris", QMD: "Queen Madrid",
+    SLR: "SL Ruby", TRZ: "Torino Zebra", WFR: "Wolf Roma",
+    WML: "Wyvern Milano",
+    ASR: "Amsterdam Look", BLL: "Black Lion", BNV: "Blue Navy",
+    FSS: "FC Spurs", FIB: "Fire Bird", ICL: "Ice Lion",
+    NTH: "Knighthoven", LDC: "London Cruiser", MAG: "Man Angel",
+    MAD: "Mandeville", RDB: "Red Bear", RSD: "Red Soldier",
+    SK4: "Shark 04", YHN: "Yellow Hornet"
+  };
   function hydratePlayerTeams(players) {
     for (const p of players) {
       if (!p.team && p.goleyTeam) {
         p.team = GOLEY_TEAM_CODES[p.goleyTeam] ||
           GOLEY_TEAM_CODES_LC[String(p.goleyTeam).toLocaleLowerCase("tr")] ||
           GOLEY_TEAM_CODES_LC[String(p.goleyTeam).toLowerCase()] || "";
+      }
+      if (p.team && TEAM_CODE_NAMES[p.team]) {
+        p.goleyTeam = TEAM_CODE_NAMES[p.team];
       }
     }
   }

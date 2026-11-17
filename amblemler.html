@@ -3,23 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RVLTracker — Amblemler</title>
-  <meta name="description" content="Revival oyuncu kartları veritabanı ve kadro kurucu: 16.391 kart, istatistikler, takım ruhu amblemleri, ekipman simülatörü ve oyuncu karşılaştırma." />
-  <meta name="theme-color" content="#38bdf8" />
+  <title>Revival Kartları — Amblemler</title>
+  <meta name="description" content="Revival takım ruhu amblemleri, yıldız seviyeleri ve kadroya sağladığı bonusları keşfedin." />
+  <meta name="theme-color" content="#1d7afc" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="RVLTracker" />
-  <meta property="og:url" content="https://rvltracker.com.tr/" />
-  <meta property="og:title" content="RVLTracker · Revival Kart Veritabanı" />
-  <meta property="og:description" content="Revival oyuncu kartları veritabanı ve kadro kurucu: 16.391 kart, istatistikler, takım ruhu amblemleri, ekipman simülatörü ve oyuncu karşılaştırma." />
-  <meta property="og:image" content="https://rvltracker.com.tr/assets/og-banner.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RVLTracker · Revival Kart Veritabanı" />
-  <meta name="twitter:description" content="Revival oyuncu kartları veritabanı ve kadro kurucu: 16.391 kart, istatistikler, takım ruhu amblemleri, ekipman simülatörü ve oyuncu karşılaştırma." />
-  <meta name="twitter:image" content="https://rvltracker.com.tr/assets/og-banner.png" />
-  <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <meta property="og:site_name" content="Revival Kartları" />
+  <meta property="og:url" content="https://revival.kartlar.workers.dev/amblemler" />
+  <meta property="og:title" content="Revival Kartları — Amblemler · Takım Ruhu Rehberi" />
+  <meta property="og:description" content="Revival takım ruhu amblemleri, yıldız seviyeleri ve kadroya sağladığı bonusları keşfedin." />
+  <meta property="og:image" content="https://revival.kartlar.workers.dev/assets/logo.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="400" />
+  <meta property="og:image:height" content="400" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Revival Kartları — Amblemler · Takım Ruhu Rehberi" />
+  <meta name="twitter:description" content="Revival takım ruhu amblemleri, yıldız seviyeleri ve kadroya sağladığı bonusları keşfedin." />
+  <meta name="twitter:image" content="https://revival.kartlar.workers.dev/assets/logo.jpg" />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+  <link rel="apple-touch-icon" href="assets/logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,8 +44,8 @@
           <option value="black-hole">🕳️ Kara Delik</option>
         </select>
         <a href="/" class="brand" data-nav="home">
-          <img class="brand-logo-img" src="assets/favicon.png" alt="RVL" />
-          <span class="brand-rvl">RVL</span><span class="brand-tracker">Tracker</span>
+          <img class="brand-logo-img" src="assets/logo.jpg" alt="RVL" />
+          <span class="brand-rvl">Revival</span> <span class="brand-tracker">Kartları</span>
         </a>
         <nav class="nav-links" id="mainNav">
           <a class="nav-link" href="/" data-tab="home"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></span><span class="nav-txt">Ana Sayfa</span></a>
@@ -71,7 +72,7 @@
         <div class="home-hero-layout">
           <div class="home-hero-text">
             <div class="home-badge">REVIVAL VERİTABANI</div>
-            <h1 class="home-title"><span>RVL</span>Tracker</h1>
+            <h1 class="home-title"><span>Revival</span> Kartları</h1>
             <p class="home-subtitle">
               1958–2016 sezonlarından 15.583 oyuncu kartını inceleyin, amblem ve ekipman etkilerini hesaplayın, kadronuzu kurup karşılaştırın.
             </p>
@@ -81,7 +82,7 @@
             </div>
           </div>
           <div class="home-hero-logo-wrap">
-            <img src="assets/favicon.png" alt="RVLTracker Logo" class="home-hero-logo" />
+            <img src="assets/logo.jpg" alt="Revival Kartları Logo" class="home-hero-logo" />
           </div>
         </div>
       </section>
@@ -124,7 +125,7 @@
     </div>
 
     <!-- ==================== 1. OYUNCULAR ==================== -->
-    <div id="view-players" class="page-view">
+    <div id="view-players" class="page-view hidden">
       <section class="hero-card rvl-deck-head">
         <div class="rvl-head-main">
           <span class="rvl-head-kicker">VERİTABANI • 1958–2016</span>
@@ -303,7 +304,7 @@
     </div>
 
     <!-- ==================== 2. AMBLEMLER ==================== -->
-    <div id="view-emblems" class="page-view hidden">
+    <div id="view-emblems" class="page-view">
       <div class="breadcrumb">Anasayfa / <span>Amblemler</span></div>
       <section class="page-head rvl-deck-head">
         <div class="rvl-head-main">
