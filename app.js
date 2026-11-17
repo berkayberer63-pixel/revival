@@ -1770,19 +1770,32 @@
   // =========================================================================
   // TAB NAVIGATION
   // =========================================================================
-  const TAB_FILES = {
-    home: "index.html",
-    players: "oyuncular.html",
-    emblems: "amblemler.html",
-    equipments: "ekipmanlar.html",
-    squad: "kadro.html",
-    compare: "karsilastirma.html"
+  const TAB_ROUTES = {
+    home: "/",
+    players: "/oyuncular",
+    emblems: "/amblemler",
+    equipments: "/ekipmanlar",
+    squad: "/kadro",
+    compare: "/karsilastirma"
   };
-  const FILE_TO_TAB = Object.fromEntries(Object.entries(TAB_FILES).map(([k, v]) => [v, k]));
+  const SLUG_TO_TAB = {
+    "": "home",
+    "index": "home",
+    "oyuncular": "players",
+    "amblemler": "emblems",
+    "ekipmanlar": "equipments",
+    "kadro": "squad",
+    "karsilastirma": "compare"
+  };
+  function resolveTabFromPath(rawPath) {
+    const clean = (rawPath || "").split("?")[0].split("#")[0].replace(/^\/+|\/+$/g, "");
+    const lastSegment = (clean.split("/").pop() || "").replace(/\.html$/i, "").toLowerCase();
+    return SLUG_TO_TAB[lastSegment] || "";
+  }
 
   let activeTab = document.body.dataset.page || "players";
   function switchTab(tabName, opts = {}) {
-    if (!TAB_FILES[tabName]) tabName = "players";
+    if (!TAB_ROUTES[tabName]) tabName = "players";
     activeTab = tabName;
     document.body.dataset.page = tabName;
     document.querySelectorAll("#mainNav .nav-link").forEach((btn) => {
@@ -1793,9 +1806,12 @@
     });
     if (opts.push !== false) {
       try {
-        const targetFile = TAB_FILES[tabName];
-        if (targetFile && !window.location.pathname.endsWith("/" + targetFile)) {
-          history.pushState({ tab: tabName }, "", targetFile);
+        const targetPath = TAB_ROUTES[tabName];
+        if (targetPath && window.location.protocol !== "file:") {
+          const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+          if (currentPath !== targetPath) {
+            history.pushState({ tab: tabName }, "", targetPath);
+          }
         }
       } catch (_) {}
     }
@@ -1877,15 +1893,14 @@
       let targetTab = link.dataset.tab || link.dataset.nav || "";
       if (!targetTab) {
         const href = (link.getAttribute("href") || "").split("?")[0].split("#")[0];
-        targetTab = FILE_TO_TAB[href] || "";
+        targetTab = resolveTabFromPath(href);
       }
       if (!targetTab || !document.getElementById(`view-${targetTab}`)) return;
       e.preventDefault();
       switchTab(targetTab);
     });
     window.addEventListener("popstate", (e) => {
-      const file = (window.location.pathname.split("/").pop() || "").toLowerCase();
-      const tab = (e.state && e.state.tab) || FILE_TO_TAB[file] || document.body.dataset.page || "home";
+      const tab = (e.state && e.state.tab) || resolveTabFromPath(window.location.pathname) || document.body.dataset.page || "home";
       switchTab(tab, { push: false });
     });
   }
@@ -2940,7 +2955,9 @@
 
     document.getElementById("sqShareBtn").addEventListener("click", () => {
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(serializeSquad()))));
-      const base = window.location.href.split("?")[0].replace(/[^/]+$/, "kadro.html");
+      const base = window.location.protocol === "file:"
+        ? window.location.href.split("?")[0].replace(/[^/]+$/, "kadro.html")
+        : `${window.location.origin}/kadro`;
       const shareUrl = `${base}?squad=${encodeURIComponent(encoded)}`;
       if (navigator.clipboard) {
         navigator.clipboard.writeText(shareUrl).catch(() => {});
