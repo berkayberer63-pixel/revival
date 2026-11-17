@@ -32,6 +32,7 @@
     Gold: "Efsane",
     Master: "Süper",
     Elite: "Uzman",
+    Mythic: "Mythic",
     Rare: "Ender",
     Special: "Özel",
     Normal: "Normal"
@@ -591,8 +592,15 @@
   // Normalize string for Turkish case-insensitive search
   function normStr(str) {
     return (str || "")
-      .toLocaleLowerCase("tr-TR")
-      .replace(/i̇/g, "i")
+      .replace(/[İIı]/g, "i")
+      .replace(/[ÖØöø]/g, "o")
+      .replace(/[Üü]/g, "u")
+      .replace(/[Şş]/g, "s")
+      .replace(/[Çç]/g, "c")
+      .replace(/[Ğğ]/g, "g")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .trim();
   }
 
@@ -640,7 +648,7 @@
     }
 
     // Sort
-    const GRADE_SORT_ORDER = { Gold: 6, Master: 5, Elite: 4, Rare: 3, Special: 2, Normal: 1 };
+    const GRADE_SORT_ORDER = { Gold: 7, Master: 6, Elite: 5, Mythic: 4, Rare: 3, Special: 2, Normal: 1 };
     const ROLE_SORT_ORDER = {
       GF: 12, FRV: 11, "K FT": 10, OOS: 9, KNT: 8, OS: 7,
       LBR: 6, "K DF": 5, BEK: 4, DF: 3, "LİB": 2, KL: 1
