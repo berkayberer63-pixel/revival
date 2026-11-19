@@ -1803,6 +1803,8 @@
     players: "/oyuncular",
     emblems: "/amblemler",
     equipments: "/ekipmanlar",
+    packs: "/paketler",
+    divisions: "/kume-paketleri",
     squad: "/kadro",
     compare: "/karsilastirma"
   };
@@ -1812,6 +1814,8 @@
     "oyuncular": "players",
     "amblemler": "emblems",
     "ekipmanlar": "equipments",
+    "paketler": "packs",
+    "kume-paketleri": "divisions",
     "kadro": "squad",
     "karsilastirma": "compare"
   };
@@ -1848,6 +1852,8 @@
     }
     if (tabName === "emblems") renderEmblemsView();
     else if (tabName === "equipments") renderEquipmentsView();
+    else if (tabName === "packs") renderPacksView();
+    else if (tabName === "divisions") renderDivisionsView();
     else if (tabName === "squad") renderSquadView();
     else if (tabName === "compare") renderCompareView();
   }
@@ -2393,6 +2399,471 @@
         </div>
       `).join("");
     }
+  }
+
+  // =========================================================================
+  // 3B. PAKETLER SAYFASI
+  // =========================================================================
+  const packViewState = {
+    search: "",
+    pay: "all",
+    season: "all",
+    uiOnly: false
+  };
+
+  function parsePackHighProb(raw) {
+    if (!raw || raw === "-") return null;
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return null;
+    return n / 1000000;
+  }
+
+  function parsePackDirectProb(raw) {
+    if (!raw || raw === "-") return null;
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return null;
+    return n;
+  }
+
+  function fmtPct(val) {
+    if (val === null || val === undefined) return "—";
+    if (val === 0) return "%0";
+    if (val >= 1) return "%" + Number(val.toFixed(2)).toString().replace(".", ",");
+    return "%" + Number(val.toFixed(4)).toString().replace(".", ",");
+  }
+
+  function getPackYearLabel(pk) {
+    const yc = (pk.yearCond || "").trim();
+    if (!yc || yc === "-") return "Tüm Yıllar";
+    const parts = yc.split(";").map((x) => Number(x));
+    if (parts.length === 2) {
+      if (parts[0] === parts[1]) return `${parts[0]} Sezonu`;
+      if (parts[0] === 0) return `2005–${parts[1]}`;
+      return `${parts[0]}–${parts[1]}`;
+    }
+    return yc;
+  }
+
+  function getPackPriceLabel(pk) {
+    const amt = Number(pk.price) || 0;
+    if (amt <= 0) return "Ödül / Etkinlik";
+    return `${amt.toLocaleString("tr-TR")} ${pk.pay || "Altın"}`;
+  }
+
+  function getPackOddsRows(pk) {
+    const hasAny =
+      (pk.probLegend && pk.probLegend !== "-") ||
+      (pk.probElite && pk.probElite !== "-") ||
+      (pk.probRare && pk.probRare !== "-") ||
+      (pk.probSpecial && pk.probSpecial !== "-") ||
+      (pk.probNormal && pk.probNormal !== "-");
+
+    if (!hasAny) {
+      return [
+        { key: "Mythic", label: "Mythic", pct: null, text: pk.probMythic === "Var" ? "Mevcut" : "—", color: "#22d3ee" },
+        { key: "Gold", label: "Süper / Efsane", pct: null, text: "—", color: "#eab308" },
+        { key: "Elite", label: "Uzman", pct: null, text: "—", color: "#a855f7" },
+        { key: "Rare", label: "Ender", pct: null, text: "—", color: "#ef4444" },
+        { key: "Special", label: "Özel", pct: null, text: "—", color: "#f97316" },
+        { key: "Normal", label: "Normal", pct: null, text: "—", color: "#64748b" }
+      ];
+    }
+
+    const leg = parsePackHighProb(pk.probLegend) || 0;
+    const eli = parsePackHighProb(pk.probElite) || 0;
+    const rarRaw = parsePackDirectProb(pk.probRare);
+    const speRaw = parsePackDirectProb(pk.probSpecial);
+    const norRaw = parsePackDirectProb(pk.probNormal);
+
+    let rar = 0;
+    let spe = 0;
+    let nor = 0;
+    if (rarRaw === 100) {
+      rar = Math.max(0, 100 - leg - eli);
+      spe = 0;
+      nor = 0;
+    } else {
+      rar = rarRaw || 0;
+      if (speRaw === 100) {
+        spe = Math.max(0, 100 - leg - eli - rar);
+        nor = 0;
+      } else if (norRaw === 100) {
+        spe = speRaw || 0;
+        nor = Math.max(0, 100 - leg - eli - rar - spe);
+      } else if (speRaw !== null && norRaw === null) {
+        spe = speRaw;
+        nor = Math.max(0, 100 - leg - eli - rar - spe);
+      } else {
+        spe = speRaw || 0;
+        nor = norRaw || 0;
+      }
+    }
+
+    const mytRaw = parsePackDirectProb(pk.probMythic);
+
+    return [
+      { key: "Gold", label: "Süper / Efsane", pct: leg, text: fmtPct(leg), color: "#eab308" },
+      { key: "Elite", label: "Uzman", pct: eli, text: fmtPct(eli), color: "#a855f7" },
+      { key: "Mythic", label: "Mythic", pct: mytRaw, text: pk.probMythic === "Var" ? "Mevcut" : (mytRaw !== null ? fmtPct(mytRaw) : "—"), color: "#22d3ee" },
+      { key: "Rare", label: "Ender", pct: rar, text: fmtPct(rar), color: "#ef4444" },
+      { key: "Special", label: "Özel", pct: spe, text: fmtPct(spe), color: "#f97316" },
+      { key: "Normal", label: "Normal", pct: nor, text: fmtPct(nor), color: "#64748b" }
+    ];
+  }
+
+  function openPackDetailModal(pk) {
+    const modal = document.getElementById("packDetailModal");
+    const body = document.getElementById("packDetailBody");
+    if (!modal || !body) return;
+
+    const imgSrc = pk.image ? `assets/packs/${pk.image}` : "assets/packs/TCP_10.png";
+    const yearLabel = getPackYearLabel(pk);
+    const priceLabel = getPackPriceLabel(pk);
+    const oddsRows = getPackOddsRows(pk);
+
+    let yearOddsHtml = "";
+    if (pk.yearOdds && pk.yearOdds !== "-") {
+      const items = pk.yearOdds.split(";").map((s) => s.trim()).filter(Boolean).map((entry) => {
+        const [yr, pct] = entry.split(":");
+        return `<span class="pk-yr-chip"><strong>${yr} Sezonu:</strong> %${pct} çıkma şansı</span>`;
+      }).join("");
+      if (items) {
+        yearOddsHtml = `<div class="pk-modal-section"><div class="pk-sec-title">Sezon / Yıl Şansları</div><div class="pk-yr-chips">${items}</div></div>`;
+      }
+    }
+
+    let teamText = "Tüm Takımlar";
+    if (pk.teamCond && pk.teamCond !== "-") {
+      const codes = pk.teamCond.split(";").map((s) => s.trim()).filter(Boolean);
+      if (codes.length <= 8) {
+        teamText = codes.map((c) => (typeof teamLabel === "function" ? teamLabel(c) : c)).join(", ");
+      } else {
+        teamText = `${codes.length} takım (${codes.slice(0, 5).join(", ")}...)`;
+      }
+    }
+
+    const posText = (!pk.posCond || pk.posCond === "-") ? "Tüm Mevkiler" : pk.posCond.replace(/;/g, ", ");
+    const dupText = pk.allowDuplicate === "O" ? "Evet (Aynı kart çıkabilir)" : "Hayır";
+
+    const barsHtml = oddsRows.map((row) => {
+      const pctText = row.text || fmtPct(row.pct);
+      const barWidth = row.pct !== null ? Math.min(100, Math.max(row.pct > 0 ? 3 : 0, row.pct)) : 0;
+      return `
+        <div class="pk-odd-row">
+          <div class="pk-odd-head">
+            <span class="pk-odd-label"><span class="pk-dot" style="background:${row.color}"></span>${row.label}</span>
+            <span class="pk-odd-val">${pctText}</span>
+          </div>
+          <div class="pk-odd-track">
+            <div class="pk-odd-fill" style="width:${barWidth}%;background:${row.color}"></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    body.innerHTML = `
+      <div class="pk-modal-hero">
+        <div class="pk-modal-img-wrap">
+          <img src="${imgSrc}" alt="${pk.name}" onerror="this.src='assets/packs/TCP_10.png'" />
+        </div>
+        <div class="pk-modal-info">
+          <div class="pk-modal-badges">
+            <span class="pk-type-badge">${pk.type || "Paket"}</span>
+            <span class="pk-yr-badge">${yearLabel}</span>
+          </div>
+          <h3 class="pk-modal-title">${pk.name}</h3>
+          ${pk.desc ? `<p class="pk-modal-desc">${pk.desc}</p>` : ""}
+          <div class="pk-modal-meta-grid">
+            <div class="pk-meta-box"><span>Ücret</span><strong>${priceLabel}</strong></div>
+            <div class="pk-meta-box"><span>Kart Adedi</span><strong>${pk.cardCount} Kart</strong></div>
+            <div class="pk-meta-box"><span>Sezon Aralığı</span><strong>${yearLabel}</strong></div>
+            <div class="pk-meta-box"><span>Aynı Kart Tekrarı</span><strong>${dupText}</strong></div>
+          </div>
+        </div>
+      </div>
+      ${yearOddsHtml}
+      <div class="pk-modal-section">
+        <div class="pk-sec-title">Kart Çıkma Oranları (Enderlik Dağılımı)</div>
+        <div class="pk-odds-list">${barsHtml}</div>
+      </div>
+      <div class="pk-modal-section">
+        <div class="pk-sec-title">Paket Koşulları</div>
+        <div class="pk-cond-grid">
+          <div><strong>Takım Havuzu:</strong> ${teamText}</div>
+          <div><strong>Mevki Havuzu:</strong> ${posText}</div>
+        </div>
+      </div>
+    `;
+    modal.classList.remove("hidden");
+  }
+
+  function initPacksView() {
+    const searchInp = document.getElementById("pkSearchInput");
+    const payPills = document.getElementById("pkPayPills");
+    const seasonPills = document.getElementById("pkSeasonPills");
+    const uiToggle = document.getElementById("pkUiOnlyToggle");
+    const closeBtn = document.getElementById("closePackDetailBtn");
+    const modal = document.getElementById("packDetailModal");
+
+    if (searchInp) {
+      searchInp.addEventListener("input", () => {
+        packViewState.search = searchInp.value;
+        renderPacksView();
+      });
+    }
+    if (payPills) {
+      payPills.addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill[data-pk-pay]");
+        if (!btn) return;
+        payPills.querySelectorAll(".pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        packViewState.pay = btn.dataset.pkPay;
+        renderPacksView();
+      });
+    }
+    if (seasonPills) {
+      seasonPills.addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill[data-pk-season]");
+        if (!btn) return;
+        seasonPills.querySelectorAll(".pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        packViewState.season = btn.dataset.pkSeason;
+        renderPacksView();
+      });
+    }
+    if (uiToggle) {
+      uiToggle.addEventListener("change", () => {
+        packViewState.uiOnly = uiToggle.checked;
+        renderPacksView();
+      });
+    }
+    if (closeBtn && modal) {
+      closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.add("hidden");
+      });
+    }
+  }
+
+  function renderPacksView() {
+    const grid = document.getElementById("packsGrid");
+    const countLabel = document.getElementById("pkCountLabel");
+    if (!grid) return;
+
+    const packs = Array.isArray(window.CARDPACKS_DATA) ? window.CARDPACKS_DATA : [];
+    const q = normStr(packViewState.search);
+
+    const filtered = packs.filter((pk) => {
+      if (packViewState.uiOnly && pk.uiVisible !== "O") return false;
+      if (packViewState.pay !== "all" && pk.pay !== packViewState.pay) return false;
+      if (packViewState.season === "2027") {
+        if (!(pk.yearCond || "").includes("2027") && !(pk.yearOdds || "").includes("2027")) return false;
+      } else if (packViewState.season === "2016") {
+        if (!(pk.yearCond || "").includes("2016")) return false;
+      }
+      if (q) {
+        const hay = normStr(`${pk.name} ${pk.id} ${pk.type} ${pk.desc || ""}`);
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (countLabel) {
+      countLabel.textContent = `${filtered.length} paket gösteriliyor (toplam ${packs.length})`;
+    }
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="loading-cell" style="grid-column:1/-1;padding:36px;">Eşleşen paket bulunamadı.</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map((pk, idx) => {
+      const imgSrc = pk.image ? `assets/packs/${pk.image}` : "assets/packs/TCP_10.png";
+      const yearLabel = getPackYearLabel(pk);
+      const priceLabel = getPackPriceLabel(pk);
+      const oddsRows = getPackOddsRows(pk);
+      const quickOdds = [];
+      for (const row of oddsRows) {
+        if (row.pct !== null && row.pct > 0) {
+          const cls = row.key === "Gold" ? "pk-o-leg" : row.key === "Elite" ? "pk-o-eli" : row.key === "Rare" ? "pk-o-rar" : row.key === "Special" ? "pk-o-spe" : "";
+          if (cls) quickOdds.push(`<span class="pk-mini-odd ${cls}">${row.label.split(" ")[0]} ${fmtPct(row.pct)}</span>`);
+        }
+      }
+      if (pk.probMythic === "Var") {
+        quickOdds.push(`<span class="pk-mini-odd pk-o-2027">Mythic</span>`);
+      }
+      if (pk.yearOdds && pk.yearOdds.includes("2027")) {
+        const m = pk.yearOdds.match(/2027:([0-9.]+)/);
+        if (m) quickOdds.push(`<span class="pk-mini-odd pk-o-2027">2027 %${m[1]}</span>`);
+      }
+
+      return `
+        <article class="pack-card" data-pack-id="${pk.id}">
+          <div class="pack-card-top">
+            <span class="pk-type-badge">${pk.type || "Paket"}</span>
+            <span class="pk-yr-badge">${yearLabel}</span>
+          </div>
+          <div class="pack-img-wrap">
+            <img src="${imgSrc}" alt="${pk.name}" loading="lazy" onerror="this.src='assets/packs/TCP_10.png'" />
+          </div>
+          <div class="pack-card-body">
+            <h3 class="pack-title">${pk.name}</h3>
+            <div class="pack-meta-row">
+              <span class="pack-price">${priceLabel}</span>
+              <span class="pack-count">${pk.cardCount} Kart</span>
+            </div>
+            <div class="pack-quick-odds">${quickOdds.join("") || '<span class="pk-mini-odd">Detay için tıkla</span>'}</div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    grid.querySelectorAll(".pack-card[data-pack-id]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const pk = packs.find((x) => x.id === card.dataset.packId);
+        if (pk) openPackDetailModal(pk);
+      });
+    });
+  }
+
+  // =========================================================================
+  // 3C. KÜME PAKETLERİ SAYFASI
+  // =========================================================================
+  const DIVISION_REWARDS = [
+    {
+      key: "Gold",
+      name: "Efsane Küme",
+      accent: "#eab308",
+      rows: [
+        { type: "Düşme", gold: "90.000 Altın", items: [{ name: "Gelişmiş Milli Takım Paketi (1)", packId: "NCP30001" }] },
+        { type: "Kalma", gold: "105.000 Altın", items: [{ name: "100 Goley Parası" }] },
+        { type: "Yükselme", gold: "100.000 Altın", items: [{ name: "Ender Oyuncu Paketi (1)", packId: "RAR00300" }] },
+        { type: "Şampiyonluk", gold: "120.000 Altın", items: [{ name: "Ender Oyuncu Paketi (1) x2", packId: "RAR00300" }] },
+        { type: "En Yüksek Küme", gold: "1.000.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "Uzman Oyuncu Paketi (1)", packId: "ELI00400" }] }
+      ]
+    },
+    {
+      key: "Master",
+      name: "Süper Küme",
+      accent: "#94a3b8",
+      rows: [
+        { type: "Düşme", gold: "37.500 Altın", items: [{ name: "%30 Hızlı TP ve Altın" }] },
+        { type: "Kalma", gold: "52.500 Altın", items: [{ name: "Özel Forvet Paketi (10)", packId: "PFW20010" }] },
+        { type: "Yükselme", gold: "60.000 Altın", items: [{ name: "Şanslı Para Paketi (1)" }] },
+        { type: "Şampiyonluk", gold: "67.500 Altın", items: [{ name: "Şanslı Kart Paketi" }] },
+        { type: "En Yüksek Küme", gold: "200.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "Ender Oyuncu Paketi (1) x2", packId: "RAR00300" }, { name: "Gelişmiş İspanya Ligi Paketi (1)", packId: "LGP50001" }] }
+      ]
+    },
+    {
+      key: "Elite",
+      name: "Uzman Küme",
+      accent: "#a855f7",
+      rows: [
+        { type: "Düşme", gold: "22.500 Altın", items: [{ name: "İyileştirme Paketi (10)", packId: "ICP10110" }] },
+        { type: "Kalma", gold: "37.500 Altın", items: [{ name: "Ekipman Paketi (3)", packId: "ACP10103" }] },
+        { type: "Yükselme", gold: "52.500 Altın", items: [{ name: "Gelişmiş Milli Takım Paketi (1)", packId: "NCP30001" }] },
+        { type: "Şampiyonluk", gold: "75.000 Altın", items: [{ name: "Rastgele Ender Kart (1)", packId: "RAR00300" }, { name: "G.Avrupa Ligi Özel Paketi (10)", packId: "TCP30010" }] },
+        { type: "En Yüksek Küme", gold: "100.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "Ender Oyuncu Paketi (1)", packId: "RAR00300" }, { name: "Gelişmiş İngiltere Ligi Paketi (1)", packId: "LGP60001" }] }
+      ]
+    },
+    {
+      key: "Rare",
+      name: "Ender Küme",
+      accent: "#ef4444",
+      rows: [
+        { type: "Düşme", gold: "15.000 Altın", items: [{ name: "Özel Amblem Paketi (10)", packId: "ESC00010" }] },
+        { type: "Kalma", gold: "22.500 Altın", items: [{ name: "Özel Forvet Paketi (5)", packId: "PFW20005" }] },
+        { type: "Yükselme", gold: "37.500 Altın", items: [{ name: "G.Avrupa Ligi Özel Paketi (10)", packId: "TCP30010" }] },
+        { type: "Şampiyonluk", gold: "67.500 Altın", items: [{ name: "Rastgele Ender Kart (1)", packId: "RAR00300" }, { name: "Özel Türkiye Ligi Paketi (10)", packId: "TRP20010" }] },
+        { type: "En Yüksek Küme", gold: "80.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "G.Avrupa Ligi Özel Paketi (10)", packId: "TCP30010" }, { name: "Türkiye Ligi Paketi (10)", packId: "TRP10010" }, { name: "K.Avrupa Ligi Özel Paketi (10)", packId: "TCP20010" }] }
+      ]
+    },
+    {
+      key: "Special",
+      name: "Özel Küme",
+      accent: "#f97316",
+      rows: [
+        { type: "Düşme", gold: "7.500 Altın", items: [{ name: "%30 Hızlı Altın (10)" }] },
+        { type: "Kalma", gold: "15.000 Altın", items: [{ name: "%30 Hızlı TP ve Altın" }] },
+        { type: "Yükselme", gold: "30.000 Altın", items: [{ name: "Altın Paketi (5)" }] },
+        { type: "Şampiyonluk", gold: "60.000 Altın", items: [{ name: "Rastgele Ender Kart (1)", packId: "RAR00300" }, { name: "Altın Paketi (10)" }] },
+        { type: "En Yüksek Küme", gold: "70.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "G.Avrupa Ligi Özel Paketi (10)", packId: "TCP30010" }, { name: "Türkiye Ligi Paketi (10)", packId: "TRP10010" }] }
+      ]
+    },
+    {
+      key: "Normal",
+      name: "Normal Küme",
+      accent: "#64748b",
+      rows: [
+        { type: "Düşme", gold: "4.500 Altın", items: [{ name: "Tam Paket (5)", packId: "TCP00081" }] },
+        { type: "Kalma", gold: "7.500 Altın", items: [{ name: "Tam Paket (10)", packId: "TCP00011" }] },
+        { type: "Yükselme", gold: "15.000 Altın", items: [{ name: "Tam Paket (20)", packId: "TCP00021" }] },
+        { type: "Şampiyonluk", gold: "45.000 Altın", items: [{ name: "K.Avrupa Ligi Özel Paketi (10)", packId: "TCP20010" }] },
+        { type: "En Yüksek Küme", gold: "50.000 Altın", items: [{ name: "Sezon İçi En Yüksek Küme Bonusu" }] },
+        { type: "Sezon Sonu Final", gold: "—", items: [{ name: "Özel Türkiye Ligi Paketi (10)", packId: "TRP20010" }] }
+      ]
+    }
+  ];
+
+  let activeDivisionFilter = "all";
+
+  function initDivisionsView() {
+    const pills = document.getElementById("divFilterPills");
+    if (!pills) return;
+    pills.addEventListener("click", (e) => {
+      const btn = e.target.closest(".pill[data-div]");
+      if (!btn) return;
+      pills.querySelectorAll(".pill").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeDivisionFilter = btn.dataset.div;
+      renderDivisionsView();
+    });
+  }
+
+  function renderDivisionsView() {
+    const grid = document.getElementById("divisionsGrid");
+    if (!grid) return;
+    const list = activeDivisionFilter === "all"
+      ? DIVISION_REWARDS
+      : DIVISION_REWARDS.filter((d) => d.key === activeDivisionFilter);
+
+    grid.innerHTML = list.map((div) => `
+      <article class="div-card" style="--div-accent:${div.accent}">
+        <div class="div-card-head">
+          <span class="grade-badge grade-${div.key}">${div.name}</span>
+          <span class="div-card-sub">%100 Kesin Küme Ödülleri</span>
+        </div>
+        <div class="div-rows">
+          ${div.rows.map((r) => `
+            <div class="div-tier-row">
+              <div class="div-tier-left">
+                <span class="div-tier-label">${r.type}</span>
+                ${r.gold !== "—" ? `<span class="div-gold-chip">${r.gold}</span>` : ""}
+              </div>
+              <div class="div-tier-items">
+                ${r.items.map((it) => it.packId
+                  ? `<button type="button" class="div-item-chip div-item-link" data-div-pack="${it.packId}">${it.name} ↗</button>`
+                  : `<span class="div-item-chip">${it.name}</span>`
+                ).join("")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </article>
+    `).join("");
+
+    const packs = Array.isArray(window.CARDPACKS_DATA) ? window.CARDPACKS_DATA : [];
+    grid.querySelectorAll(".div-item-link[data-div-pack]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const pk = packs.find((x) => x.id === btn.dataset.divPack);
+        if (pk) openPackDetailModal(pk);
+      });
+    });
   }
 
   // =========================================================================
@@ -3887,6 +4358,8 @@
     initNavigation();
     initEmblemsView();
     initEquipmentsView();
+    initPacksView();
+    initDivisionsView();
     initSquadView();
     initCompareView();
     try {
@@ -3939,6 +4412,8 @@
       syncSquadEmblemUI();
       if (activeTab === "emblems") renderEmblemsView();
       else if (activeTab === "equipments") renderEquipmentsView();
+      else if (activeTab === "packs") renderPacksView();
+      else if (activeTab === "divisions") renderDivisionsView();
       else if (activeTab === "squad") renderSquadView();
       else if (activeTab === "compare") renderCompareView();
     } catch (err) {

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revival Kartları — Paketler</title>
+  <meta name="description" content="Revival ekipmanları, kramponlar, tekmelikler ve stat artışlarını simüle edin." />
+  <meta name="theme-color" content="#1d7afc" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Revival Kartları" />
+  <meta property="og:url" content="https://revival.kartlar.workers.dev/ekipmanlar" />
+  <meta property="og:title" content="Revival Kartları — Ekipmanlar · Ekipman Simülatörü" />
+  <meta property="og:description" content="Revival ekipmanları, kramponlar, tekmelikler ve stat artışlarını simüle edin." />
+  <meta property="og:image" content="https://revival.kartlar.workers.dev/assets/logo.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="400" />
+  <meta property="og:image:height" content="400" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Revival Kartları — Ekipmanlar · Ekipman Simülatörü" />
+  <meta name="twitter:description" content="Revival ekipmanları, kramponlar, tekmelikler ve stat artışlarını simüle edin." />
+  <meta name="twitter:image" content="https://revival.kartlar.workers.dev/assets/logo.jpg" />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+  <link rel="apple-touch-icon" href="assets/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" /></noscript>
+  <link rel="stylesheet" href="styles.min.css" />
+  <link rel="stylesheet" href="theme-light.min.css" />
+</head>
+<body data-page="packs">
+  <script>try{if(localStorage.getItem("rvl_color_mode")==="dark")document.body.classList.add("theme-dark");if(localStorage.getItem("rvl_no_anim")==="1")document.body.classList.add("no-anim");}catch(_){}</script>
+  <canvas id="asciiBgCanvas" aria-hidden="true"></canvas>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <select id="bgThemeSelect" class="bg-theme-select" title="Arka Plan Teması Seç">
+          <option value="cloud-sea">🌅 Bulut Denizi</option>
+          <option value="volcano-night">🌋 Yanardağ Gecesi</option>
+          <option value="lantern-lake">🏮 Fener Gölü</option>
+          <option value="aurora-fjord">🌌 Aurora Fiyort</option>
+          <option value="kyoto-dusk">⛩️ Kyoto Akşamı</option>
+          <option value="frog">🐸 Kurbağa</option>
+          <option value="black-hole">🕳️ Kara Delik</option>
+        </select>
+        <a href="/" class="brand" data-nav="home">
+          <img class="brand-logo-img" src="assets/logo-sm.jpg" alt="RVL" width="24" height="24" decoding="async" />
+          <span class="brand-rvl">Revival</span> <span class="brand-tracker">Kartları</span>
+        </a>
+        <nav class="nav-links" id="mainNav">
+          <a class="nav-link" href="/" data-tab="home"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></span><span class="nav-txt">Ana Sayfa</span></a>
+          <a class="nav-link" href="/oyuncular" data-tab="players"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.6c2.4.2 4.3 1.7 4.9 4.4"/></svg></span><span class="nav-txt">Oyuncular</span></a>
+          <a class="nav-link active" href="/paketler" data-tab="packs"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8M8 12.5h5"/></svg></span><span class="nav-txt">Paketler</span></a>
+          <a class="nav-link" href="/kume-paketleri" data-tab="divisions"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/></svg></span><span class="nav-txt">Küme Paketleri</span></a>
+          <a class="nav-link" href="/amblemler" data-tab="emblems"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8 7.5 9.5 4.4-1.5 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nav-txt">Amblemler</span></a>
+          <a class="nav-link" href="/ekipmanlar" data-tab="equipments"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15.5h10.5l3-2.5 4.5 1v3.5H3z"/><path d="M5 15.5V9.5h4l2 3"/><path d="M7 19.5h2M13 19.5h2"/></svg></span><span class="nav-txt">Ekipmanlar</span></a>
+          <a class="nav-link" href="/kadro" data-tab="squad"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 12h17"/><circle cx="12" cy="12" r="2.6"/></svg></span><span class="nav-txt">Kadro</span></a>
+          <a class="nav-link" href="/karsilastirma" data-tab="compare"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M17 4v16"/><path d="M3.5 8.5 7 5l3.5 3.5M13.5 15.5 17 19l3.5-3.5"/></svg></span><span class="nav-txt">Karşılaştırma</span></a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <span class="db-badge" id="dbBadge">15.583 Kart</span>
+      </div>
+      <div class="sidebar-legal">
+        <a href="/gizlilik" class="sidebar-legal-link">Gizlilik ve KVKK Aydınlatma Metni</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- ==================== 0. ANA SAYFA (GİRİŞ) ==================== -->
+    <div id="view-home" class="page-view hidden">
+      <section class="home-hero">
+        <div class="home-hero-layout">
+          <div class="home-hero-text">
+            <div class="home-badge">REVIVAL VERİTABANI</div>
+            <h1 class="home-title"><span>Revival</span> Kartları</h1>
+            <p class="home-subtitle">
+              1958–2016 sezonlarından 15.583 oyuncu kartını inceleyin, amblem ve ekipman etkilerini hesaplayın, kadronuzu kurup karşılaştırın.
+            </p>
+            <div class="home-cta-row">
+              <a href="/oyuncular" class="home-cta-primary">⚽ Oyuncular</a>
+              <a href="/kadro" class="home-cta-secondary">🛡️ Kadro Kur</a>
+            </div>
+          </div>
+          <div class="home-hero-logo-wrap">
+            <img src="assets/logo-hero.jpg" alt="Revival Kartları Logo" class="home-hero-logo" width="112" height="112" decoding="async" />
+          </div>
+        </div>
+      </section>
+
+      <section class="home-theme-banner">
+        <div class="home-theme-head">
+          <h2>🎨 Arka Plan Teması</h2>
+        </div>
+        <div class="home-theme-grid" id="homeThemePicker">
+          <button type="button" class="home-theme-btn active" data-bg-theme="cloud-sea">
+            <span class="ht-emoji">🌅</span>
+            <span class="ht-name">Bulut Denizi</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="volcano-night">
+            <span class="ht-emoji">🌋</span>
+            <span class="ht-name">Yanardağ Gecesi</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="lantern-lake">
+            <span class="ht-emoji">🏮</span>
+            <span class="ht-name">Fener Gölü</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="aurora-fjord">
+            <span class="ht-emoji">🌌</span>
+            <span class="ht-name">Aurora Fiyort</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="kyoto-dusk">
+            <span class="ht-emoji">⛩️</span>
+            <span class="ht-name">Kyoto Akşamı</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="frog">
+            <span class="ht-emoji">🐸</span>
+            <span class="ht-name">Kurbağa</span>
+          </button>
+          <button type="button" class="home-theme-btn" data-bg-theme="black-hole">
+            <span class="ht-emoji">🕳️</span>
+            <span class="ht-name">Kara Delik</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== 1. OYUNCULAR ==================== -->
+    <div id="view-players" class="page-view hidden">
+      <section class="hero-card rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">VERİTABANI • 1958–2016</span>
+          <h1 class="hero-title">Revival Oyuncu Kartları</h1>
+          <p class="hero-subtitle">Tüm sezon kartlarını mevkii, enderlik, bölge, amblem ve seviye simülasyonuyla filtreleyin.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <div class="results-counter">
+            <span id="resultCountText">15.583 oyuncu bulundu</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-command-deck">
+        <div class="rvl-cmd-toolbar">
+          <div class="search-box rvl-cmd-search">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Oyuncu veya kulüp ara..." autocomplete="off" />
+            <button id="clearSearchBtn" class="clear-input-btn hidden" title="Aramayı Temizle">✕</button>
+          </div>
+
+          <select id="teamSelect" class="filter-select">
+            <option value="">Tüm Takımlar</option>
+          </select>
+
+          <select id="yearSelect" class="filter-select">
+            <option value="">Tüm Yıllar</option>
+          </select>
+
+          <select id="sortSelect" class="filter-select">
+            <option value="pwr_desc">Sırala: PWR (Yüksek)</option>
+            <option value="pwr_asc">Sırala: PWR (Düşük)</option>
+            <option value="ofa_desc">Sırala: OFA (Yüksek)</option>
+            <option value="def_desc">Sırala: DEF (Yüksek)</option>
+            <option value="guc_desc">Sırala: GÜÇ (Yüksek)</option>
+            <option value="hiz_desc">Sırala: HIZ (Yüksek)</option>
+            <option value="tek_desc">Sırala: TEK (Yüksek)</option>
+            <option value="zhn_desc">Sırala: ZHN (Yüksek)</option>
+            <option value="total_desc">Sırala: Toplam Stat</option>
+            <option value="year_desc">Sırala: Yıl (Yeni)</option>
+            <option value="name_asc">Sırala: İsim (A–Z)</option>
+          </select>
+
+          <div class="rvl-tool-actions">
+            <button id="favOnlyBtn" class="btn-outline fav-filter-btn" title="Sadece Favori Oyuncular">
+              ★ Favoriler (<span id="favCount">0</span>)
+            </button>
+            <button id="advFilterBtn" class="btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              Detaylı
+            </button>
+            <button id="teamSpiritBtn" class="btn-spirit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Amblem
+              <span id="spiritActiveBadge" class="spirit-badge hidden"></span>
+            </button>
+            <button id="resetMainBtn" class="btn-outline btn-reset-inline" title="Tüm filtreleri ve amblemi sıfırla">↺ Sıfırla</button>
+          </div>
+        </div>
+
+        <div id="advFilterPanel" class="adv-filter-panel hidden">
+          <div class="adv-grid">
+            <div class="adv-item"><label>Min OFA</label><input type="number" id="minOfa" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item"><label>Min DEF</label><input type="number" id="minDef" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item"><label>Min GÜÇ</label><input type="number" id="minGuc" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item"><label>Min HIZ</label><input type="number" id="minHiz" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item"><label>Min TEK</label><input type="number" id="minTek" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item"><label>Min ZHN</label><input type="number" id="minZhn" min="1" max="150" placeholder="0" /></div>
+            <div class="adv-item">
+              <label>Hava Durumu</label>
+              <select id="weatherSelect" class="filter-select">
+                <option value="">Tümü</option>
+                <option value="Sunny">☀️ Güneşli</option>
+                <option value="Rainy">🌧️ Yağmurlu</option>
+                <option value="Snow">❄️ Karlı</option>
+                <option value="Cloudy">☁️ Bulutlu</option>
+                <option value="None">➖ Yok</option>
+              </select>
+            </div>
+            <div class="adv-item adv-actions">
+              <button id="resetAllBtn" class="btn-reset">Filtreleri Sıfırla</button>
+            </div>
+          </div>
+          <div class="adv-sub-section">
+            <div class="adv-sub-title">Min Alt Değerler <small>(0 veya boş = filtresiz)</small></div>
+            <div id="advSubGrid" class="adv-sub-grid"></div>
+          </div>
+        </div>
+
+        <div class="rvl-bento-filters">
+          <div class="rvl-bento-cell rvl-cell-role">
+            <div class="rvl-cell-head"><span>MEVKİ</span></div>
+            <div class="rvl-role-grid" id="rolePills">
+              <button class="pill pill-fw" data-role="GF">GF</button>
+              <button class="pill pill-fw" data-role="FRV">FRV</button>
+              <button class="pill pill-fw" data-role="K FT">K FT</button>
+              <button class="pill pill-gk" data-role="KL">KL</button>
+              <button class="pill pill-mf" data-role="OOS">OOS</button>
+              <button class="pill pill-mf" data-role="KNT">KNT</button>
+              <button class="pill pill-mf" data-role="OS">OS</button>
+              <button class="pill pill-mf" data-role="LBR">LBR</button>
+              <button class="pill pill-df" data-role="K DF">K DF</button>
+              <button class="pill pill-df" data-role="BEK">BEK</button>
+              <button class="pill pill-df" data-role="DF">DF</button>
+              <button class="pill pill-df" data-role="LİB">LİB</button>
+            </div>
+          </div>
+
+          <div class="rvl-bento-cell rvl-cell-grade">
+            <div class="rvl-cell-head"><span>KART ENDERLİĞİ</span></div>
+            <div class="rvl-grade-grid" id="gradePills">
+              <button class="pill pill-gold" data-grade="Gold">Efsane</button>
+              <button class="pill pill-master" data-grade="Master">Süper</button>
+              <button class="pill pill-elite" data-grade="Elite">Uzman</button>
+                <button class="pill pill-mythic" data-grade="Mythic">Mythic</button>
+              <button class="pill pill-rare" data-grade="Rare">Ender</button>
+              <button class="pill pill-special" data-grade="Special">Özel</button>
+              <button class="pill pill-normal" data-grade="Normal">Normal</button>
+            </div>
+          </div>
+
+          <div class="rvl-bento-cell rvl-cell-side">
+            <div class="rvl-side-sub">
+              <div class="rvl-cell-head"><span>BÖLGE</span></div>
+              <div class="rvl-region-grid" id="regionPills">
+                <button class="pill pill-region" data-region="Güney Avrupa">Güney Avrupa</button>
+                <button class="pill pill-region" data-region="Kuzey Avrupa">Kuzey Avrupa</button>
+                <button class="pill pill-region" data-region="Türkiye">Türkiye</button>
+                <button class="pill pill-region" data-region="Milli Takımlar">Milli Takımlar</button>
+              </div>
+            </div>
+            <div class="rvl-level-dock">
+              <span class="level-label">SEVİYE (LEVEL)</span>
+              <div class="rvl-level-row">
+                <input type="range" id="levelSlider" min="0" max="25" value="0" />
+                <span class="level-badge" id="levelValue">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <div class="table-responsive">
+          <table class="players-table">
+            <thead>
+              <tr>
+                <th class="col-pos" data-sort="pos">MEVKİ</th>
+                <th class="col-name" data-sort="name">OYUNCU</th>
+                <th class="col-team" data-sort="team">TAKIM</th>
+                <th class="col-year" data-sort="year">YIL</th>
+                <th class="col-grade" data-sort="grade">SEVİYE</th>
+                <th class="col-stat" data-sort="ofa">OFA</th>
+                <th class="col-stat" data-sort="def">DEF</th>
+                <th class="col-stat" data-sort="guc">GÜÇ</th>
+                <th class="col-stat" data-sort="hiz">HIZ</th>
+                <th class="col-stat" data-sort="tek">TEK</th>
+                <th class="col-stat" data-sort="zhn">ZHN</th>
+                <th class="col-pwr" data-sort="pwr">PWR <span class="sort-arrow">▼</span></th>
+                <th class="col-cmp">KRŞ</th>
+              </tr>
+            </thead>
+            <tbody id="playersTableBody">
+              <tr><td colspan="13" class="loading-cell">Veriler yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar">
+          <div class="page-info" id="pageInfo">Sayfa 1 / 1</div>
+          <div class="page-buttons" id="pageButtons"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== 2. AMBLEMLER ==================== -->
+    <div id="view-emblems" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Amblemler</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">TAKIM RUHU SİMÜLATÖRÜ</span>
+          <h1 class="hero-title">Amblemler</h1>
+          <p class="hero-subtitle">Kart içindeki anahtarla yıllı veya tüm yıllar amblemi arasında geçin; yıldızlara tıklayarak seviye bonuslarını görün.</p>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-emb-deck">
+        <div class="rvl-emb-row-top">
+          <div class="rvl-field-group">
+            <label class="rvl-field-lbl" for="embSearchInput">AMBLEM ARA</label>
+            <div class="search-box">
+              <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="embSearchInput" placeholder="Takım adı ara..." autocomplete="off" />
+            </div>
+          </div>
+          <div class="rvl-field-group rvl-field-year">
+            <label class="rvl-field-lbl" for="embYearFilter">SEZON YILI</label>
+            <select id="embYearFilter" class="filter-select">
+              <option value="">Tüm Yıllar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rvl-emb-row-bot">
+          <div class="rvl-bento-cell">
+            <div class="rvl-cell-head"><span>BÖLGE</span></div>
+            <div class="rvl-chip-strip" id="embRegionPills">
+              <button class="pill pill-dot-tr" data-emb-region="Türkiye"><span class="dot dot-red"></span>Türkiye</button>
+              <button class="pill pill-dot-sa" data-emb-region="Güney Avrupa"><span class="dot dot-blue"></span>Güney Avrupa</button>
+              <button class="pill pill-dot-ka" data-emb-region="Kuzey Avrupa"><span class="dot dot-amber"></span>Kuzey Avrupa</button>
+              <button class="pill pill-dot-mt" data-emb-region="Milli Takımlar"><span class="dot dot-green"></span>Milli Takımlar</button>
+            </div>
+          </div>
+
+          <div class="rvl-bento-cell">
+            <div class="rvl-cell-head"><span>ENDERLİK</span></div>
+            <div class="rvl-star-segmented" id="embStarPills">
+              <button class="pill emb-star-pill" data-emb-stars="1">1★</button>
+              <button class="pill emb-star-pill" data-emb-stars="2">2★</button>
+              <button class="pill emb-star-pill" data-emb-stars="3">3★</button>
+              <button class="pill emb-star-pill" data-emb-stars="4">4★</button>
+              <button class="pill emb-star-pill active" data-emb-stars="5">5★</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="emblemsGridWrap"></div>
+    </div>
+
+    <!-- ==================== 3. EKİPMANLAR ==================== -->
+    <div id="view-equipments" class="page-view">
+      <div class="breadcrumb">Anasayfa / <span>Ekipmanlar</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">KART EKİPMAN SİSTEMİ</span>
+          <h1 class="hero-title">Ekipmanlar</h1>
+          <p class="hero-subtitle">90 ekipman kartı, 30 set ve 22 aktif yetenek. Aynı setin kol + bacak + kramponu takıldığında her parça kendi statına +1 ek bonus verir.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <span class="eq-count-label" id="eqCountLabel">90 ekipman gösteriliyor</span>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-eq-deck">
+        <div class="rvl-eq-top">
+          <div class="eq-subtabs rvl-eq-tabs" id="eqSubtabs">
+            <button class="eq-subtab active" data-eqtab="sets">Ekipman Setleri (3'lü)</button>
+            <button class="eq-subtab" data-eqtab="items">Tekli Parçalar</button>
+            <button class="eq-subtab" data-eqtab="skills">Aktif Yetenekler</button>
+          </div>
+          <div class="search-box rvl-eq-search">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="eqSearchInput" placeholder="Ekipman, set, yetenek veya buff ara..." autocomplete="off" />
+          </div>
+        </div>
+
+        <div id="eqSubFilters" class="eq-subfilters rvl-eq-subdock hidden">
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">YER</span>
+            <div class="rvl-chip-strip" id="eqSlotPills">
+              <button class="pill" data-eq-slot="Kol">Kol</button>
+              <button class="pill" data-eq-slot="Bacak">Bacak</button>
+              <button class="pill" data-eq-slot="Krampon">Krampon</button>
+            </div>
+          </div>
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">TAKILABİLİR</span>
+            <div class="rvl-chip-strip" id="eqTargetPills">
+              <button class="pill" data-eq-target="Saha oyuncusu">Saha oyuncusu</button>
+              <button class="pill" data-eq-target="Kaleci">Kaleci</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="equipmentsContent" class="eq-grid"></div>
+    </div>
+
+    <!-- ==================== 3B. PAKETLER ==================== -->
+    <div id="view-packs" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Paketler</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">PAKET VERİTABANI</span>
+          <h1 class="hero-title">Kart Paketleri</h1>
+          <p class="hero-subtitle">Oyundaki tüm Altın, RP ve Seviye Ödül paketleri; sezon kapsamları (2016 / 2027) ve kart çıkma oranları. Detaylı oranlar için bir pakete tıkla.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <span class="eq-count-label" id="pkCountLabel">Yükleniyor...</span>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-eq-deck">
+        <div class="rvl-eq-top">
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">ÖDEME</span>
+            <div class="rvl-chip-strip" id="pkPayPills">
+              <button class="pill active" data-pk-pay="all">Tümü</button>
+              <button class="pill" data-pk-pay="Altın">Altın</button>
+              <button class="pill" data-pk-pay="RP">RP</button>
+            </div>
+          </div>
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">SEZON</span>
+            <div class="rvl-chip-strip" id="pkSeasonPills">
+              <button class="pill active" data-pk-season="all">Tümü</button>
+              <button class="pill" data-pk-season="2027">2027 İçerenler</button>
+              <button class="pill" data-pk-season="2016">2016</button>
+            </div>
+          </div>
+          <div class="search-box rvl-eq-search">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="pkSearchInput" placeholder="Paket adı ara... (örn. Tam Paket, 2027, Cadılar Bayramı)" autocomplete="off" />
+          </div>
+        </div>
+      </section>
+
+      <div id="packsGrid" class="packs-grid"></div>
+    </div>
+
+    <!-- ==================== 3C. KÜME PAKETLERİ ==================== -->
+    <div id="view-divisions" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Küme Paketleri</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">DERECELİ SEZON ÖDÜLLERİ</span>
+          <h1 class="hero-title">Küme Paketleri</h1>
+          <p class="hero-subtitle">Normal, Özel, Ender, Uzman, Süper ve Efsane kümelerinde düşme, kalma, yükselme, şampiyonluk ve sezon sonu final ödüllerinin %100 kesin içerikleri.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <span class="eq-count-label">6 Küme</span>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-eq-deck">
+        <div class="rvl-eq-top">
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">KÜME</span>
+            <div class="rvl-chip-strip" id="divFilterPills">
+              <button class="pill active" data-div="all">Tümü</button>
+              <button class="pill pill-gold" data-div="Gold">Efsane</button>
+              <button class="pill pill-master" data-div="Master">Süper</button>
+              <button class="pill pill-elite" data-div="Elite">Uzman</button>
+              <button class="pill pill-rare" data-div="Rare">Ender</button>
+              <button class="pill pill-special" data-div="Special">Özel</button>
+              <button class="pill pill-normal" data-div="Normal">Normal</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="divisionsGrid" class="divisions-grid"></div>
+    </div>
+    <!-- ==================== 4. KADRO KURUCU ==================== -->
+    <div id="view-squad" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Kadro</span></div>
+      <section class="page-head">
+        <h1 class="hero-title">Kadro Kurucu</h1>
+        <p class="hero-subtitle">Soldan dizilişi ve amblemi seç, havuzdaki oyunculara tıklayarak veya sürükleyerek sahaya yerleştir; uygun mevkiler parlar, maliyeti ve takım ruhunu takip et.</p>
+      </section>
+
+      <div class="squad-layout">
+        <!-- Sol Ayar Paneli -->
+        <aside class="squad-left">
+          <div class="squad-box">
+            <div class="squad-box-title">Amblem</div>
+            <button id="sqEmblemBtn" class="sq-emblem-pick">
+              <span id="sqEmblemText">+ Amblem Seç</span>
+            </button>
+            <p class="sq-emblem-hint" id="sqEmblemHint">Amblem seçilmedi, + ile amblem seç.</p>
+          </div>
+
+          <div class="squad-box">
+            <div class="sq-field">
+              <label>DİZİLİŞ</label>
+              <select id="sqFormation" class="filter-select">
+                <option value="4-4-2 A">4-4-2 A</option>
+                <option value="4-4-2 B">4-4-2 B</option>
+                <option value="4-4-2 C">4-4-2 C</option>
+                <option value="4-3-3 A">4-3-3 A</option>
+                <option value="4-3-3 B">4-3-3 B</option>
+                <option value="4-3-3 C">4-3-3 C</option>
+                <option value="4-5-1 A">4-5-1 A</option>
+                <option value="4-5-1 B">4-5-1 B</option>
+                <option value="4-5-1 C">4-5-1 C</option>
+                <option value="3-5-2 A">3-5-2 A</option>
+                <option value="3-5-2 B">3-5-2 B</option>
+                <option value="3-5-2 C">3-5-2 C</option>
+                <option value="3-4-3 A">3-4-3 A</option>
+                <option value="3-4-3 B">3-4-3 B</option>
+                <option value="3-4-3 C">3-4-3 C</option>
+                <option value="5-4-1 A">5-4-1 A</option>
+                <option value="5-4-1 B">5-4-1 B</option>
+                <option value="5-4-1 C">5-4-1 C</option>
+              </select>
+            </div>
+            <div class="sq-field">
+              <div class="sq-slider-head"><span>DİKEY</span><strong id="sqVertLabel">Temel</strong></div>
+              <input type="range" id="sqVertSlider" min="-2" max="2" value="0" />
+            </div>
+            <div class="sq-field">
+              <div class="sq-slider-head"><span>YATAY</span><strong id="sqHorizLabel">Temel</strong></div>
+              <input type="range" id="sqHorizSlider" min="-2" max="2" value="0" />
+            </div>
+          </div>
+
+          <div class="squad-box">
+            <div class="sq-stat-line">
+              <span>MALİYET</span>
+              <div class="sq-cost-wrap">
+                <strong id="sqTotalCost" class="sq-big-num">0</strong>
+                <span class="sq-cost-sep">/</span>
+                <input type="number" id="sqMaxCost" class="sq-max-cost-input" min="0" max="999" placeholder="∞" title="Maksimum Maliyet Limiti (0 = Limitsiz)" />
+              </div>
+            </div>
+            <div class="sq-stat-line"><span>ORT. PWR</span><strong id="sqAvgPwr" class="sq-big-num sq-amber">0</strong></div>
+            <div class="sq-stat-line"><span>TOPLAM PWR</span><strong id="sqTotalPwr" class="sq-big-num">0</strong></div>
+            <div class="sq-stat-line"><span>KADRO</span><strong id="sqFilledCount">0 / 11</strong></div>
+            <div id="sqAvgStats" class="sq-avg-stats"></div>
+            <div id="sqWeatherSummary" class="sq-weather-summary"></div>
+            <div class="sq-actions">
+              <button id="sqAutoFillBtn" class="btn-spirit" title="Seçili diziliş ve ambleme göre en iyi 11'i kur">⚡ En İyi 11</button>
+              <button id="sqAutoBestRareBtn" class="btn-spirit" title="Yalnızca Ender kartlardan en iyi 11'i kur">💎 En İyi Ender</button>
+              <button id="sqClearBtn" class="btn-reset">Temizle</button>
+            </div>
+            <div class="sq-actions" style="margin-top:6px;">
+              <button id="sqShareBtn" class="btn-compare-go">Paylaş / Link</button>
+              <button id="sqImportBtn" class="btn-outline" title="Paylaşılan kadro kodunu veya JSON'ı yükle">Kod Yükle</button>
+            </div>
+          </div>
+
+          <!-- Seçili Slot Ekipmanı -->
+          <div id="sqSlotEquipBox" class="squad-box hidden">
+            <div class="squad-box-head">
+              <span class="squad-box-title" id="sqSlotEquipTitle">Slot Ekipmanı</span>
+              <button id="sqRemoveSlotBtn" class="btn-slot-remove" title="Oyuncuyu Slottan Çıkar">Çıkar</button>
+            </div>
+            <div class="sq-equip-selects">
+              <div class="sq-field">
+                <label>KRAMPON</label>
+                <select id="sqEquipCle" class="filter-select"></select>
+              </div>
+              <div class="sq-field">
+                <label>BACAK</label>
+                <select id="sqEquipLeg" class="filter-select"></select>
+              </div>
+              <div class="sq-field">
+                <label>KOL</label>
+                <select id="sqEquipArm" class="filter-select"></select>
+              </div>
+            </div>
+            <div id="sqEquipSetBadge" class="sq-equip-set-badge hidden"></div>
+          </div>
+
+          <!-- Kayıtlı Kadrolar -->
+          <div class="squad-box">
+            <div class="squad-box-title" style="margin-bottom:8px;">Kayıtlı Kadrolar</div>
+            <div class="sq-save-row">
+              <input type="text" id="sqSaveName" class="sq-search-input" placeholder="Kadro adı..." autocomplete="off" />
+              <button id="sqSaveBtn" class="btn-compare-go">Kaydet</button>
+            </div>
+            <div class="sq-load-row">
+              <select id="sqSavedSelect" class="filter-select">
+                <option value="">Kayıtlı kadro yok</option>
+              </select>
+              <button id="sqLoadBtn" class="btn-outline" title="Seçili kadroyu yükle">Yükle</button>
+              <button id="sqDelSavedBtn" class="btn-reset" title="Seçili kaydı sil">Sil</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Orta Saha -->
+        <section class="squad-pitch-wrap">
+          <div class="squad-pitch" id="sqPitch">
+            <div class="pitch-markings">
+              <div class="pitch-half-line"></div>
+              <div class="pitch-center-circle"></div>
+              <div class="pitch-box-top"></div>
+              <div class="pitch-box-bottom"></div>
+            </div>
+            <div id="sqSlotsLayer" class="sq-slots-layer"></div>
+          </div>
+        </section>
+
+        <!-- Sağ Oyuncu Havuzu -->
+        <aside class="squad-pool">
+          <div class="squad-box-title">Oyuncu Havuzu</div>
+          <input type="text" id="sqSearch" class="sq-search-input" placeholder="Oyuncu ara..." autocomplete="off" />
+
+          <div class="sq-pool-toggles">
+            <button id="sqAllTeamsBtn" class="pill active">Tüm Takımlar</button>
+            <button id="sqEmblemOnlyBtn" class="pill">Seçili Amblem</button>
+          </div>
+
+          <div class="pill-group" id="sqRolePills">
+            <button class="pill pill-gk" data-sq-role="KL">KL</button>
+            <button class="pill pill-df" data-sq-role="LİB">LİB</button>
+            <button class="pill pill-df" data-sq-role="DF">DF</button>
+            <button class="pill pill-df" data-sq-role="BEK">BEK</button>
+            <button class="pill pill-df" data-sq-role="K DF">K DF</button>
+            <button class="pill pill-mf" data-sq-role="LBR">LBR</button>
+            <button class="pill pill-mf" data-sq-role="OS">OS</button>
+            <button class="pill pill-mf" data-sq-role="KNT">KNT</button>
+            <button class="pill pill-mf" data-sq-role="OOS">OOS</button>
+            <button class="pill pill-fw" data-sq-role="K FT">K FT</button>
+            <button class="pill pill-fw" data-sq-role="FRV">FRV</button>
+            <button class="pill pill-fw" data-sq-role="GF">GF</button>
+          </div>
+
+          <div class="sq-pool-selects">
+            <div>
+              <label>ENDERLİK</label>
+              <select id="sqGrade" class="filter-select">
+                <option value="">Tümü</option>
+                <option value="Gold">Efsane</option>
+                <option value="Master">Süper</option>
+                <option value="Elite">Uzman</option>
+            <option value="Mythic">Mythic</option>
+                <option value="Rare">Ender</option>
+                <option value="Special">Özel</option>
+                <option value="Normal">Normal</option>
+              </select>
+            </div>
+            <div>
+              <label>YIL</label>
+              <select id="sqYear" class="filter-select">
+                <option value="">Tümü</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sq-pool-level">
+            <span class="level-label">SEVİYE</span>
+            <input type="range" id="sqLevelSlider" min="0" max="25" value="0" />
+            <span class="level-badge" id="sqLevelVal">0</span>
+          </div>
+
+          <div id="sqPoolGrid" class="sq-pool-grid"></div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ==================== 5. KARŞILAŞTIRMA SAYFASI ==================== -->
+    <div id="view-compare" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Karşılaştırma</span></div>
+      <section class="page-head compare-page-head">
+        <div>
+          <h1 class="hero-title">Oyuncu Karşılaştırma</h1>
+          <p class="hero-subtitle">En fazla 4 oyuncuyu yan yana oyun içi kart formatında karşılaştırın. Seviye (0–25) ve Amblem etkilerini anında görebilirsiniz.</p>
+        </div>
+        <div class="compare-page-controls">
+          <button id="cmpEmblemBtn" class="btn-spirit" title="Karşılaştırmaya Amblem Etkisi Ekle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span id="cmpEmblemBtnText">Amblem Seç</span>
+          </button>
+          <div class="level-control">
+            <span class="level-label">LEVEL</span>
+            <input type="range" id="cmpLevelSlider" min="0" max="25" value="0" />
+            <span class="level-badge" id="cmpLevelValue">0</span>
+          </div>
+          <button id="cmpClearAllBtn" class="btn-reset">Tümünü Temizle</button>
+        </div>
+      </section>
+
+      <div class="compare-picker-row">
+        <div class="search-box">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="cmpSearchInput" placeholder="Karşılaştırmaya oyuncu eklemek için ara (örn: Dzeko, Osimhen, Rooney)..." autocomplete="off" />
+        </div>
+        <div id="cmpSearchResults" class="cmp-search-dropdown hidden"></div>
+      </div>
+
+      <div id="compareRadarWrap" class="compare-radar-wrap hidden"></div>
+      <div id="compareCardsGrid" class="compare-cards-grid"></div>
+      <div id="compareSummaryTable" class="compare-summary-table hidden"></div>
+    </div>
+  </main>
+
+  <!-- Floating Comparison Drawer -->
+  <div id="compareBar" class="compare-bar hidden">
+    <div class="compare-bar-inner">
+      <div class="compare-slots" id="compareSlots"></div>
+      <div class="compare-actions">
+        <button id="openCompareModalBtn" class="btn-compare-go">Karşılaştır (<span id="compareCount">0</span>)</button>
+        <button id="clearCompareBtn" class="btn-compare-clear">Temizle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Modal (Cards View) -->
+  <div id="compareModal" class="modal-backdrop hidden">
+    <div class="modal-box modal-xl">
+      <div class="modal-header">
+        <h3>Oyuncu Karşılaştırma</h3>
+        <button id="closeCompareModal" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="compareModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Amblem Seç Modal -->
+  <div id="spiritModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🛡️ Amblem Seç</h3>
+        <button id="closeSpiritModal" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Amblemin bölgesini, takımını, yılını ve yıldız sayısını seçin. Amblem efektleri oyuncu kartlarının alt statlarına uygulanır.</p>
+        <div class="spirit-grid">
+          <div class="spirit-item">
+            <label>Bölge</label>
+            <select id="emblemLeague" class="filter-select">
+              <option value="Güney Avrupa">Güney Avrupa</option>
+              <option value="Kuzey Avrupa">Kuzey Avrupa</option>
+              <option value="Türkiye">Türkiye</option>
+              <option value="Milli Takımlar">Milli Takımlar</option>
+            </select>
+          </div>
+          <div class="spirit-item">
+            <label>Takım</label>
+            <select id="emblemTeam" class="filter-select hidden"></select>
+            <div class="custom-team-select" id="emblemTeamPicker">
+              <button type="button" id="emblemTeamTrigger" class="custom-team-trigger">
+                <span id="emblemTeamTriggerContent" class="custom-team-trigger-content">Takım seç...</span>
+                <span class="custom-team-arrow">▾</span>
+              </button>
+              <div id="emblemTeamMenu" class="custom-team-menu hidden"></div>
+            </div>
+          </div>
+          <div class="spirit-item">
+            <label>Yıl</label>
+            <select id="emblemYear" class="filter-select"></select>
+          </div>
+          <div class="spirit-item">
+            <label>Yıldız</label>
+            <select id="emblemStars" class="filter-select"></select>
+          </div>
+        </div>
+        <div id="emblemPreview" class="emblem-preview"></div>
+        <div class="modal-footer">
+          <button id="resetSpiritBtn" class="btn-reset">Amblemi Kaldır</button>
+          <button id="applySpiritBtn" class="btn-compare-go">Uygula</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paket Detay Modalı -->
+  <div id="packDetailModal" class="modal-backdrop hidden">
+    <div class="modal-box pk-modal-box">
+      <div class="modal-header">
+        <h2>Paket Detayı &amp; Çıkma Oranları</h2>
+        <button id="closePackDetailBtn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="packDetailBody"></div>
+    </div>
+  </div>
+  <!-- Çoklu Yüzen Oyuncu Kartları Konteyneri -->
+  <div id="floatingCardsLayer"></div>
+
+  <script defer src="players-data.js"></script>
+  <script defer src="emblems-data.js"></script>
+  <script defer src="equipments-data.js"></script>
+  <script defer src="packs-data.js"></script>
+  <script defer src="ascii-bg.js"></script>
+  <script defer src="app.js"></script>
+</body>
+</html>

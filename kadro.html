@@ -51,6 +51,8 @@
         <nav class="nav-links" id="mainNav">
           <a class="nav-link" href="/" data-tab="home"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></span><span class="nav-txt">Ana Sayfa</span></a>
           <a class="nav-link" href="/oyuncular" data-tab="players"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.6c2.4.2 4.3 1.7 4.9 4.4"/></svg></span><span class="nav-txt">Oyuncular</span></a>
+          <a class="nav-link" href="/paketler" data-tab="packs"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8M8 12.5h5"/></svg></span><span class="nav-txt">Paketler</span></a>
+          <a class="nav-link" href="/kume-paketleri" data-tab="divisions"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/></svg></span><span class="nav-txt">Küme Paketleri</span></a>
           <a class="nav-link" href="/amblemler" data-tab="emblems"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8 7.5 9.5 4.4-1.5 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nav-txt">Amblemler</span></a>
           <a class="nav-link" href="/ekipmanlar" data-tab="equipments"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15.5h10.5l3-2.5 4.5 1v3.5H3z"/><path d="M5 15.5V9.5h4l2 3"/><path d="M7 19.5h2M13 19.5h2"/></svg></span><span class="nav-txt">Ekipmanlar</span></a>
           <a class="nav-link active" href="/kadro" data-tab="squad"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 12h17"/><circle cx="12" cy="12" r="2.6"/></svg></span><span class="nav-txt">Kadro</span></a>
@@ -413,6 +415,83 @@
       <div id="equipmentsContent" class="eq-grid"></div>
     </div>
 
+    <!-- ==================== 3B. PAKETLER ==================== -->
+    <div id="view-packs" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Paketler</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">PAKET VERİTABANI</span>
+          <h1 class="hero-title">Kart Paketleri</h1>
+          <p class="hero-subtitle">Oyundaki tüm Altın, RP ve Seviye Ödül paketleri; sezon kapsamları (2016 / 2027) ve kart çıkma oranları. Detaylı oranlar için bir pakete tıkla.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <span class="eq-count-label" id="pkCountLabel">Yükleniyor...</span>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-eq-deck">
+        <div class="rvl-eq-top">
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">ÖDEME</span>
+            <div class="rvl-chip-strip" id="pkPayPills">
+              <button class="pill active" data-pk-pay="all">Tümü</button>
+              <button class="pill" data-pk-pay="Altın">Altın</button>
+              <button class="pill" data-pk-pay="RP">RP</button>
+            </div>
+          </div>
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">SEZON</span>
+            <div class="rvl-chip-strip" id="pkSeasonPills">
+              <button class="pill active" data-pk-season="all">Tümü</button>
+              <button class="pill" data-pk-season="2027">2027 İçerenler</button>
+              <button class="pill" data-pk-season="2016">2016</button>
+            </div>
+          </div>
+          <div class="search-box rvl-eq-search">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="pkSearchInput" placeholder="Paket adı ara... (örn. Tam Paket, 2027, Cadılar Bayramı)" autocomplete="off" />
+          </div>
+        </div>
+      </section>
+
+      <div id="packsGrid" class="packs-grid"></div>
+    </div>
+
+    <!-- ==================== 3C. KÜME PAKETLERİ ==================== -->
+    <div id="view-divisions" class="page-view hidden">
+      <div class="breadcrumb">Anasayfa / <span>Küme Paketleri</span></div>
+      <section class="page-head rvl-deck-head">
+        <div class="rvl-head-main">
+          <span class="rvl-head-kicker">DERECELİ SEZON ÖDÜLLERİ</span>
+          <h1 class="hero-title">Küme Paketleri</h1>
+          <p class="hero-subtitle">Normal, Özel, Ender, Uzman, Süper ve Efsane kümelerinde düşme, kalma, yükselme, şampiyonluk ve sezon sonu final ödüllerinin %100 kesin içerikleri.</p>
+        </div>
+        <div class="rvl-head-stat">
+          <span class="eq-count-label">6 Küme</span>
+        </div>
+      </section>
+
+      <section class="filter-panel rvl-eq-deck">
+        <div class="rvl-eq-top">
+          <div class="rvl-eq-dock-group">
+            <span class="rvl-cell-head-inline">KÜME</span>
+            <div class="rvl-chip-strip" id="divFilterPills">
+              <button class="pill active" data-div="all">Tümü</button>
+              <button class="pill pill-gold" data-div="Gold">Efsane</button>
+              <button class="pill pill-master" data-div="Master">Süper</button>
+              <button class="pill pill-elite" data-div="Elite">Uzman</button>
+              <button class="pill pill-rare" data-div="Rare">Ender</button>
+              <button class="pill pill-special" data-div="Special">Özel</button>
+              <button class="pill pill-normal" data-div="Normal">Normal</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="divisionsGrid" class="divisions-grid"></div>
+    </div>
     <!-- ==================== 4. KADRO KURUCU ==================== -->
     <div id="view-squad" class="page-view">
       <div class="breadcrumb">Anasayfa / <span>Kadro</span></div>
@@ -710,12 +789,23 @@
     </div>
   </div>
 
+  <!-- Paket Detay Modalı -->
+  <div id="packDetailModal" class="modal-backdrop hidden">
+    <div class="modal-box pk-modal-box">
+      <div class="modal-header">
+        <h2>Paket Detayı &amp; Çıkma Oranları</h2>
+        <button id="closePackDetailBtn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="packDetailBody"></div>
+    </div>
+  </div>
   <!-- Çoklu Yüzen Oyuncu Kartları Konteyneri -->
   <div id="floatingCardsLayer"></div>
 
   <script defer src="players-data.js"></script>
   <script defer src="emblems-data.js"></script>
   <script defer src="equipments-data.js"></script>
+  <script defer src="packs-data.js"></script>
   <script defer src="ascii-bg.js"></script>
   <script defer src="app.js"></script>
 </body>
