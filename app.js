@@ -2169,9 +2169,10 @@
           `<option value="${y.year}" ${y.year === activeEntry.year ? "selected" : ""}>${y.year}</option>`
         ).join("");
 
-        const yrShort = cs.mode === "all"
+        const isAllEntry = !activeEntry.year || activeEntry.year === 0;
+        const yrShort = isAllEntry
           ? "ALL"
-          : (activeEntry.year ? String(activeEntry.year).slice(-2) : "");
+          : String(activeEntry.year).slice(-2);
         const bannerTitle = yrShort ? `${yrShort} ${disp.goleyName}` : disp.goleyName;
 
         html += `
@@ -2193,8 +2194,8 @@
               <div class="emb-bars">${barsHtml}</div>
               <div class="emb-controls-row">
                 <div class="emb-mode-switch">
-                  <button class="emb-mode-btn ${cs.mode === "yearly" ? "active" : ""}" data-emb-team="${g.team}" data-set-mode="yearly">Yıllı</button>
-                  <button class="emb-mode-btn ${cs.mode === "all" ? "active" : ""}" data-emb-team="${g.team}" data-set-mode="all">Tüm Yıllar</button>
+                  ${g.yearlyEntries.length > 0 ? `<button class="emb-mode-btn ${cs.mode === "yearly" ? "active" : ""}" data-emb-team="${g.team}" data-set-mode="yearly">Yıllı</button>` : ""}
+                  <button class="emb-mode-btn ${cs.mode === "all" || g.yearlyEntries.length === 0 ? "active" : ""}" data-emb-team="${g.team}" data-set-mode="all">Tüm Yıllar</button>
                 </div>
                 ${cs.mode === "yearly" && g.yearlyEntries.length > 0 ? `
                   <select class="emb-year-select" data-emb-team="${g.team}" title="Sezon Yılı">${yearOptions}</select>
